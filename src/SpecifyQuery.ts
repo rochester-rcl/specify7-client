@@ -65,13 +65,16 @@ export async function fetchTaxonByField(
   }
   const { results } = queryResult as ISpecifyQueryMappingResult;
   // only fetch first result for now
-  const [taxonId] = results[0];
-  const taxon = await fetchFunc(
-    `api/specify/taxon/${taxonId}`,
-    HttpMethod.GET,
-    null
-  );
-  return taxon ? (taxon as ISpecifyTaxon) : null;
+  const taxonId = results.length ? results[0][0] : null;
+  if (taxonId) {
+    const taxon = await fetchFunc(
+      `api/specify/taxon/${taxonId}`,
+      HttpMethod.GET,
+      null
+    );
+    return taxon ? (taxon as ISpecifyTaxon) : null;
+  }
+  return null;
 }
 
 export async function fetchTaxonSynonyms(
@@ -79,8 +82,12 @@ export async function fetchTaxonSynonyms(
   fetchFunc: SpecifyFetchSignature
 ): Promise<ISpecifyTaxon[] | null> {
   if (taxon.acceptedchildren) {
-    const children = await fetchFunc(taxon.acceptedchildren, HttpMethod.GET, null);
-    return children ? children as ISpecifyTaxon[] : null;
+    const children = await fetchFunc(
+      taxon.acceptedchildren,
+      HttpMethod.GET,
+      null
+    );
+    return children ? (children as ISpecifyTaxon[]) : null;
   }
   return null;
 }

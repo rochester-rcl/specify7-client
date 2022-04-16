@@ -53,8 +53,17 @@ async function fetchInternal<T>(
 interface ISpecifyLoginCtx {
   username: string;
   password: string;
-  collections: KeyVal[];
+  collections: ICollectionMap[];
   collection: string | null;
+}
+
+export async function getAvailableCollections(
+  baseUrl: string
+): Promise<ICollectionMap[]> {
+  const loginUrl = `${baseUrl}/context/login/`;
+  const ctx = await fetchInternal<ISpecifyLoginCtx>(loginUrl);
+  const { collections } = ctx;
+  return collections;
 }
 
 async function getCredentials(

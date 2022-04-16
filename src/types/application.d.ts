@@ -11,6 +11,10 @@ interface KeyVal {
 
 type SpecifyCollectionId = number;
 
+interface ICollectionMap {
+  [key: string]: SpecifyCollectionId;
+}
+
 interface ISpecifyUserPartial {
   id: number;
   isauthenticated: boolean;
